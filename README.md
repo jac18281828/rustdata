@@ -21,15 +21,6 @@ docker run --name my-postgres -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=pas
 cargo run --release --bin pg
 ```
 
-Write time to Postgres:
-
-1037531 us
-
-Read time for stats
-
-2539 us
-
-
 ## Parquet
 
 #### 1. run the client
@@ -38,22 +29,9 @@ Read time for stats
 cargo run --release --bin pq
 ```
 
-Write time to Parquet
-
-2687 us
-
-Read time for stats
-
-339 us
-
-##### Storage size
-
-583k
-
-
 ## Comparison Chart
 
 | Storage                                | Write Time (us) | Read Time (us) | Storage Size (kB) |
 | -------------------------------------- | --------------- | -------------- | ----------------- |
 | [Parquet](https://parquet.apache.org/) | 2687            | 339            | 583               |
-| [Postgres](https://www.postgresql.org) | 1037531         | 2539           | 1024              |
+| [Postgres](https://www.postgresql.org) | 1037531         | 2539           | 1048              |
