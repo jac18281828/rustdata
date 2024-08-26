@@ -11,7 +11,7 @@ async fn main() {
     let rewards_claimed = read_reward_json(json_file_path).await.unwrap();
 
     // connect db
-    let db_connect = "postgresql://postgres:password@192.168.10.31:5432/edb";
+    let db_connect = "postgresql://postgres:password@localhost:5432/edb";
     let mut postgres = postgres::init_postgres(db_connect).await.unwrap();
     postgres::create_tables(&mut postgres).await.unwrap();
 
