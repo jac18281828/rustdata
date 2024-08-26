@@ -30,6 +30,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut outputfile = OpenOptions::new()
         .write(true)
         .create(true)
+        .truncate(true)
         .open("rewards_claimed.json")?;
 
     let mut claimed_events: Vec<eigen_types::RewardsClaimed> = Vec::new();
@@ -47,7 +48,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         for (event, _) in events {
             let root: [u8; 32] = event.root.as_slice().try_into()?;
             let rewards_claimed = eigen_types::RewardsClaimed {
-                root: root,
+                root,
                 earner: event.earner.to_string(),
                 claimer: event.claimer.to_string(),
                 recipient: event.recipient.to_string(),

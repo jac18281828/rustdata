@@ -16,13 +16,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let write_instant = std::time::Instant::now();
     // Write the Parquet file
-    let row_count = parquet::write_parquet_file(parquet_file_path, rewards_claimed)?;
+    parquet::write_parquet_file(parquet_file_path, &rewards_claimed)?;
     println!("Write time: {:?} us", write_instant.elapsed().as_micros());
 
     // Create some metadata
     let metadata = Metadata {
         description: String::from("Parquet file"),
-        row_count,
+        row_count: rewards_claimed.len() as u64,
     };
 
     // Write the metadata sidecar

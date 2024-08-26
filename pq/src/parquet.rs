@@ -10,6 +10,7 @@ use parquet::{
 use tracing::debug;
 
 #[derive(Debug)]
+#[allow(dead_code)]
 pub struct ClaimedAmountStat {
     pub sum: u128,
     pub count: u64,
@@ -25,12 +26,9 @@ fn convert_to_fixed_bytes(data: Vec<u8>) -> eyre::Result<FixedLenByteArray> {
 
 pub fn write_parquet_file(
     path: &str,
-    rewards_claimed: Vec<eigen_types::RewardsClaimed>,
-) -> eyre::Result<u64> {
+    rewards_claimed: &[eigen_types::RewardsClaimed],
+) -> eyre::Result<()> {
     let path = Path::new(path);
-
-    let dx_data = vec![1, 2, 3];
-
     let message_type = "
       message schema {
         REQUIRED FIXED_LEN_BYTE_ARRAY (32) root;
@@ -43,7 +41,7 @@ pub fn write_parquet_file(
     ";
 
     let schema = Arc::new(parse_message_type(message_type).unwrap());
-    let file = fs::File::create(&path).unwrap();
+    let file = fs::File::create(path).unwrap();
     let mut writer = SerializedFileWriter::new(file, schema, Default::default()).unwrap();
     let mut row_group_writer = writer.next_row_group().unwrap();
     if let Some(mut col_writer) = row_group_writer.next_column().unwrap() {
@@ -140,10 +138,7 @@ pub fn write_parquet_file(
     row_group_writer.close().unwrap();
     writer.close().unwrap();
 
-    let row_count = dx_data.len();
-
-    println!("Wrote {} rows", row_count);
-    Ok(row_count as u64)
+    Ok(())
 }
 
 #[allow(dead_code)] // this function is an example for testing purposes

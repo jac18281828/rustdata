@@ -5,6 +5,7 @@ use rust_decimal::prelude::*;
 use rust_decimal::Decimal;
 
 #[derive(Debug)]
+#[allow(dead_code)]
 pub struct ClaimedAmountStat {
     pub sum: Decimal,
     pub count: u64,
@@ -83,7 +84,7 @@ pub async fn create_tables(postgres: &mut PostgresClient) -> Result<(), Error> {
 
 pub async fn write_rewards_claimed(
     postgres: &mut PostgresClient,
-    rewards_claimed: Vec<eigen_types::RewardsClaimed>,
+    rewards_claimed: &Vec<eigen_types::RewardsClaimed>,
 ) -> Result<(), Error> {
     for reward in rewards_claimed {
         if reward.claimed_amount > 5000u128 * 10u128.pow(18) {

@@ -17,7 +17,7 @@ async fn main() {
 
     let write_instant = std::time::Instant::now();
     // Write the pg data
-    postgres::write_rewards_claimed(&mut postgres, rewards_claimed)
+    postgres::write_rewards_claimed(&mut postgres, &rewards_claimed)
         .await
         .unwrap();
     println!("Write time: {:?} us", write_instant.elapsed().as_micros());
