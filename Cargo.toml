@@ -1,5 +1,5 @@
 [workspace]
-members = [ "eigen_types", "pg","pq", "reward_json"]
+members = [ "eigen_types", "pg","pq", "reward_json", "duckdb", "sqlite"]
 resolver = "2"
 
 [workspace.dependencies]
