@@ -22,7 +22,9 @@ async fn main() {
     println!("Write time: {:?} us", write_instant.elapsed().as_micros());
 
     let read_instant = std::time::Instant::now();
-    let stat = quack::read_rewards_claimed_stat(&mut duck_client).await.unwrap();
+    let stat = quack::read_rewards_claimed_stat(&mut duck_client)
+        .await
+        .unwrap();
     println!(
         "Read stat time: {:?} us",
         read_instant.elapsed().as_micros()

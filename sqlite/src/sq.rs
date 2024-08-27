@@ -1,6 +1,4 @@
-use tracing::warn;
-
-use rusqlite::{Connection, Result, Error};
+use rusqlite::{Connection, Error, Result};
 
 #[derive(Debug)]
 #[allow(dead_code)]
@@ -46,10 +44,8 @@ pub async fn create_tables(duck: &mut SqliteClient) -> Result<(), Error> {
     let _ = duck
         .client
         .execute("DROP TABLE IF EXISTS rewards_claimed", [])?;
-    let _ = duck
-        .client
-        .execute(
-            "CREATE TABLE IF NOT EXISTS rewards_claimed (
+    let _ = duck.client.execute(
+        "CREATE TABLE IF NOT EXISTS rewards_claimed (
                 id integer PRIMARY KEY,
                 root CHAR(64),
                 earner CHAR(42),
@@ -58,14 +54,12 @@ pub async fn create_tables(duck: &mut SqliteClient) -> Result<(), Error> {
                 token CHAR(42),
                 claimed_amount NUMERIC
             )",
-            [],
-        )?;
-    let _ =  duck
-        .client
-        .execute(
-            "CREATE INDEX IF NOT EXISTS rewards_claimed_id_index ON rewards_claimed (id, root)",
-            [],
-        )?;
+        [],
+    )?;
+    let _ = duck.client.execute(
+        "CREATE INDEX IF NOT EXISTS rewards_claimed_id_index ON rewards_claimed (id, root)",
+        [],
+    )?;
     let _ = duck
         .client
         .execute(
@@ -84,12 +78,12 @@ pub async fn write_rewards_claimed(
             // warn!("Claimed amount too high: {:?}", reward.claimed_amount);
             continue;
         }
-        let claimed_amount: u128 = reward.claimed_amount.into();
+        let claimed_amount: u128 = reward.claimed_amount;
         let _ = quack
             .client
             .execute(
                 "INSERT INTO rewards_claimed (root, earner, claimer, recipient, token, claimed_amount) VALUES (?, ?, ?, ?, ?, ?)",
-                &[
+                [
                     &array_to_hex_string(&reward.root),
                     &reward.earner,
                     &reward.claimer,
@@ -102,22 +96,32 @@ pub async fn write_rewards_claimed(
     Ok(())
 }
 
-pub async fn read_rewards_claimed_stat(quack: &mut SqliteClient) -> eyre::Result<ClaimedAmountStat> {
-    let sum: f64 = quack
-        .client
-        .query_row("SELECT SUM(claimed_amount) FROM rewards_claimed", [], |row| row.get(0))?;
+pub async fn read_rewards_claimed_stat(
+    quack: &mut SqliteClient,
+) -> eyre::Result<ClaimedAmountStat> {
+    let sum: f64 = quack.client.query_row(
+        "SELECT SUM(claimed_amount) FROM rewards_claimed",
+        [],
+        |row| row.get(0),
+    )?;
 
-    let count: u64 = quack
-        .client
-        .query_row("SELECT COUNT(claimed_amount) FROM rewards_claimed", [], |row| row.get(0))?;
+    let count: u64 = quack.client.query_row(
+        "SELECT COUNT(claimed_amount) FROM rewards_claimed",
+        [],
+        |row| row.get(0),
+    )?;
 
-    let claimed_max: f64 = quack
-        .client
-        .query_row("SELECT MAX(claimed_amount) FROM rewards_claimed", [], |row| row.get(0))?;
+    let claimed_max: f64 = quack.client.query_row(
+        "SELECT MAX(claimed_amount) FROM rewards_claimed",
+        [],
+        |row| row.get(0),
+    )?;
 
-    let claimed_min: f64 = quack
-        .client
-        .query_row("SELECT MIN(claimed_amount) FROM rewards_claimed", [], |row| row.get(0))?;
+    let claimed_min: f64 = quack.client.query_row(
+        "SELECT MIN(claimed_amount) FROM rewards_claimed",
+        [],
+        |row| row.get(0),
+    )?;
 
     let claimed_mean = sum / count as f64;
 
@@ -131,8 +135,11 @@ pub async fn read_rewards_claimed_stat(quack: &mut SqliteClient) -> eyre::Result
 }
 
 pub async fn table_size(quack: &mut SqliteClient) -> eyre::Result<u64> {
-    let size: u64 = quack
-        .client
-        .query_row("select estimated_size from duckdb_tables()", [], |row| row.get(0))?;
+    let size: u64 =
+        quack
+            .client
+            .query_row("select estimated_size from duckdb_tables()", [], |row| {
+                row.get(0)
+            })?;
     Ok(size)
 }
