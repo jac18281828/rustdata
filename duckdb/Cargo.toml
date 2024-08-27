@@ -1,0 +1,16 @@
+[package]
+name = "duckdb"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+tracing.workspace = true
+tracing-subscriber.workspace = true
+eyre.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+eigen_types.workspace = true
+tokio.workspace = true
+
+duckdb = {  version = "1.0.0", features = ["bundled"] }
+rust_decimal = {version = "1.10", features = ["tokio-pg"]}
